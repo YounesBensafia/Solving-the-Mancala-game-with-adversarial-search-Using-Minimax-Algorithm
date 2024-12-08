@@ -1,235 +1,126 @@
 import pygame
 import sys
+import time
 
-class Colors:
-    """Classe de constantes pour les couleurs du jeu"""
-    BACKGROUND = (245, 222, 179)  # Blé
-    BOARD = (139, 69, 19)  # Marron foncé
-    PIT = (222, 184, 135)  # Marron clair
-    STONE = (169, 169, 169)  # Gris
-    TEXT = (0, 0, 0)  # Noir
+# Initialize Pygame
+pygame.init()
 
-class GameConfig:
-    """Configuration du jeu Mancala"""
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
-    PITS_PER_PLAYER = 6
-    INITIAL_STONES_PER_PIT = 4
+# Screen dimensions
+WIDTH, HEIGHT = 1000, 500
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Mancala Game")
 
-class MancalaBoard:
-    """Représentation logique du plateau de Mancala"""
-    def __init__(self, config):
-        self.config = config
-        self.reset_board()
-    
-    def reset_board(self):
-        """Réinitialise le plateau de jeu"""
-        total_pits = self.config.PITS_PER_PLAYER * 2
-        self.pits = [self.config.INITIAL_STONES_PER_PIT] * total_pits
-        self.stores = [0, 0]  # Stores pour chaque joueur
-        self.current_player = 0
-    
-    def move_stones(self, start_pit):
-        """Logique de distribution des pierres"""
-        stones = self.pits[start_pit]
-        self.pits[start_pit] = 0
-        current_pit = start_pit
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+BROWN = (102, 51, 0)
+LIGHT_BROWN = (153, 102, 51)
+STONE_COLOR = (200, 100, 50)
+HIGHLIGHT = (255, 255, 0)
 
-        while stones > 0:
-            current_pit = (current_pit + 1) % (self.config.PITS_PER_PLAYER * 2)
-            
-            # Sauter le store de l'adversaire
-            if current_pit == (self.config.PITS_PER_PLAYER if self.current_player == 1 else self.config.PITS_PER_PLAYER * 2):
-                continue
-            
-            self.pits[current_pit] += 1
-            stones -= 1
-        
-        # Logique de capture
-        self._handle_capture(current_pit)
-        
-        # Changement de joueur
-        if current_pit not in [self.config.PITS_PER_PLAYER - 1, self.config.PITS_PER_PLAYER * 2 - 1]:
-            self.current_player = 1 - self.current_player
-    
-    def _handle_capture(self, last_pit):
-        """Gère la capture des pierres"""
-        if (self.current_player == 0 and 
-            self.config.PITS_PER_PLAYER <= last_pit < self.config.PITS_PER_PLAYER * 2 and 
-            self.pits[last_pit] == 1):
-            opposite_pit = len(self.pits) - 1 - last_pit
-            if self.pits[opposite_pit] > 0:
-                captured = self.pits[opposite_pit] + 1
-                self.stores[self.current_player] += captured
-                self.pits[last_pit] = 0
-                self.pits[opposite_pit] = 0
+# Fonts
+pygame.font.init()
+FONT = pygame.font.Font(pygame.font.get_default_font(), 24)
 
-class MancalaRenderer:
-    """Rendu graphique du jeu Mancala"""
-    def __init__(self, screen, board, config):
-        self.screen = screen
-        self.board = board
-        self.config = config
-        self.font = pygame.font.Font(None, 36)
-    
-    def draw_board(self):
-        """Dessine l'ensemble du plateau de jeu"""
-        self.screen.fill(Colors.BACKGROUND)
-        self._draw_game_board()
-        self._draw_pits()
-        self._draw_stores()
-        self._draw_player_turn()
-    
-    def _draw_game_board(self):
-        """Dessine le plateau principal"""
-        pygame.draw.rect(
-            self.screen, 
-            Colors.BOARD, 
-            (100, 200, 600, 200), 
-            0
-        )
-    
-    def _draw_pits(self):
-        """Dessine les pits pour chaque joueur"""
-        pit_width, pit_height = 80, 120
-        pit_spacing = 10
-        
-        # Pits du haut (Joueur 2)
-        for i in range(self.config.PITS_PER_PLAYER):
-            x = 200 + i * (pit_width + pit_spacing)
-            pygame.draw.ellipse(
-                self.screen, 
-                Colors.PIT, 
-                (x, 250, pit_width, pit_height)
-            )
-            self._render_pit_text(
-                self.board.pits[i], 
-                (x + pit_width//2, 310)
-            )
-        
-        # Pits du bas (Joueur 1)
-        for i in range(self.config.PITS_PER_PLAYER):
-            x = 200 + i * (pit_width + pit_spacing)
-            pygame.draw.ellipse(
-                self.screen, 
-                Colors.PIT, 
-                (x, 350, pit_width, pit_height)
-            )
-            self._render_pit_text(
-                self.board.pits[i + self.config.PITS_PER_PLAYER], 
-                (x + pit_width//2, 410)
-            )
-    
-    def _render_pit_text(self, stones, position):
-        """Affiche le nombre de pierres dans un pit"""
-        text = self.font.render(str(stones), True, Colors.TEXT)
-        text_rect = text.get_rect(center=position)
-        self.screen.blit(text, text_rect)
-    
-    def _draw_stores(self):
-        """Dessine les stores des joueurs"""
-        pygame.draw.rect(
-            self.screen, 
-            Colors.PIT, 
-            (100, 250, 80, 200)
-        )
-        pygame.draw.rect(
-            self.screen, 
-            Colors.PIT, 
-            (700, 250, 80, 200)
-        )
-        
-        # Texte des stores
-        store1_text = self.font.render(
-            str(self.board.stores[0]), 
-            True, 
-            Colors.TEXT
-        )
-        store2_text = self.font.render(
-            str(self.board.stores[1]), 
-            True, 
-            Colors.TEXT
-        )
-        
-        self.screen.blit(
-            store1_text, 
-            store1_text.get_rect(center=(140, 350))
-        )
-        self.screen.blit(
-            store2_text, 
-            store2_text.get_rect(center=(740, 350))
-        )
-    
-    def _draw_player_turn(self):
-        """Affiche le tour du joueur actuel"""
-        player_text = self.font.render(
-            f"Tour du Joueur {self.board.current_player + 1}", 
-            True, 
-            Colors.TEXT
-        )
-        player_rect = player_text.get_rect(
-            center=(self.config.SCREEN_WIDTH//2, 50)
-        )
-        self.screen.blit(player_text, player_rect)
+# Board Layout
+PIT_RADIUS = 50
+STONE_RADIUS = 12
+PIT_POSITIONS = [
+    # Top row (Player 2 side)
+    (150 + i * 120, 150) for i in range(6)
+] + [
+    # Bottom row (Player 1 side)
+    (150 + i * 120, 350) for i in range(6)
+]
+STORE_POSITIONS = [(50, 250), (950, 250)]  # Left and right stores
 
-class MancalaGame:
-    """Classe principale gérant le jeu Mancala"""
-    def __init__(self):
-        pygame.init()
-        self.config = GameConfig()
-        self.screen = pygame.display.set_mode(
-            (self.config.SCREEN_WIDTH, self.config.SCREEN_HEIGHT)
-        )
-        pygame.display.set_caption("Jeu Mancala")
-        
-        self.board = MancalaBoard(self.config)
-        self.renderer = MancalaRenderer(self.screen, self.board, self.config)
-    
-    def _get_clicked_pit(self, pos):
-        """Détermine le pit cliqué par le joueur"""
-        pit_width, pit_height = 80, 120
-        pit_spacing = 10
-        start_x = 200
-        
-        for i in range(self.config.PITS_PER_PLAYER):
-            x = start_x + i * (pit_width + pit_spacing)
-            pit_index = i + (self.config.PITS_PER_PLAYER if self.board.current_player == 0 else 0)
-            
-            # Vérification de la zone de clic
-            if (x < pos[0] < x + pit_width and 
-                (350 if self.board.current_player == 0 else 250) < pos[1] < 
-                (350 if self.board.current_player == 0 else 250) + pit_height):
-                
-                if self.board.pits[pit_index] > 0:
-                    return pit_index
-        return None
-    
-    def run(self):
-        """Boucle principale du jeu"""
-        clock = pygame.time.Clock()
-        
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:  # Clic gauche
-                        clicked_pit = self._get_clicked_pit(event.pos)
-                        if clicked_pit is not None:
-                            self.board.move_stones(clicked_pit)
-            
-            self.renderer.draw_board()
-            pygame.display.flip()
-            clock.tick(30)
+# Stone count in each pit (default setup)
+stones = [4] * 6 + [0] + [4] * 6 + [0]
 
-def main():
-    """Point d'entrée du jeu"""
-    game = MancalaGame()
-    game.run()
 
-if __name__ == "__main__":
-    main()
+def draw_board():
+    """Draw the Mancala board and pits."""
+    # Background
+    screen.fill((34, 139, 34))  # Grass green background
+    pygame.draw.rect(screen, LIGHT_BROWN, (100, 100, 800, 300), border_radius=20)  # Board
     
-    
+    # Draw pits
+    for i, pos in enumerate(PIT_POSITIONS):
+        color = HIGHLIGHT if stones[i] > 0 else BROWN
+        pygame.draw.circle(screen, color, pos, PIT_RADIUS)
+        pygame.draw.circle(screen, BLACK, pos, PIT_RADIUS, 3)  # Outline
+
+    # Draw stores
+    for i, pos in enumerate(STORE_POSITIONS):
+        pygame.draw.rect(screen, BROWN, (pos[0] - 40, pos[1] - 100, 80, 200), border_radius=20)
+        pygame.draw.rect(screen, BLACK, (pos[0] - 40, pos[1] - 100, 80, 200), 3, border_radius=20)  # Outline
+
+    # Add labels
+    player1_label = FONT.render("Player 1", True, BLACK)
+    player2_label = FONT.render("Player 2", True, BLACK)
+    screen.blit(player1_label, (WIDTH // 2 - 50, 400))
+    screen.blit(player2_label, (WIDTH // 2 - 50, 50))
+
+
+def draw_stones():
+    """Draw stones inside pits and stores."""
+    for i, count in enumerate(stones):
+        x, y = (PIT_POSITIONS + STORE_POSITIONS)[i]  # Center of the pit or store
+        for j in range(count):
+            # Arrange stones in a grid inside the pit or store
+            dx = (j % 4 - 1.5) * (STONE_RADIUS * 2.5)  # Spread stones horizontally
+            dy = (j // 4 - 0.5) * (STONE_RADIUS * 2.5)  # Spread stones vertically
+            pygame.draw.circle(screen, STONE_COLOR, (x + int(dx), y + int(dy)), STONE_RADIUS)
+
+
+def animate_stone_movement(start, end):
+    """Animate a single stone moving between pits."""
+    start_x, start_y = (PIT_POSITIONS + STORE_POSITIONS)[start]
+    end_x, end_y = (PIT_POSITIONS + STORE_POSITIONS)[end]
+    x, y = start_x, start_y
+
+    for _ in range(30):  # Smooth transition
+        x += (end_x - start_x) / 30
+        y += (end_y - start_y) / 30
+        screen.fill((34, 139, 34))
+        draw_board()
+        draw_stones()
+        pygame.draw.circle(screen, HIGHLIGHT, (int(x), int(y)), STONE_RADIUS)
+        pygame.display.flip()
+        time.sleep(0.02)
+
+
+def handle_click(pos):
+    """Handle clicks on pits."""
+    for i, pit_pos in enumerate(PIT_POSITIONS):
+        dist = ((pit_pos[0] - pos[0]) ** 2 + (pit_pos[1] - pos[1]) ** 2) ** 0.5
+        if dist <= PIT_RADIUS:
+            return i
+    return None
+
+
+# Main game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            clicked_pit = handle_click(event.pos)
+            if clicked_pit is not None and stones[clicked_pit] > 0:
+                # Move stones from clicked pit (for now, simply animate to next pit)
+                stone_count = stones[clicked_pit]
+                stones[clicked_pit] = 0
+                for _ in range(stone_count):
+                    next_pit = (clicked_pit + 1) % len(stones)
+                    animate_stone_movement(clicked_pit, next_pit)
+                    stones[next_pit] += 1
+                    clicked_pit = next_pit
+
+    # Redraw the board
+    draw_board()
+    draw_stones()
+    pygame.display.flip()
+
+pygame.quit()
+sys.exit()
