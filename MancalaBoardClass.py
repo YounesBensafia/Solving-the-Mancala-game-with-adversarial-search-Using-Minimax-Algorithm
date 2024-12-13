@@ -14,14 +14,6 @@ class MancalaBoard:
             'G': 4, 'H': 4, 'I': 4, 'J': 4, 'K': 4, 'L': 4, 2: 0  #PLAYER 2
         }
         
-        # Optionally, add two tuples: one to store the indices (letters) 
-        #  of Player 1's pits and another for Player 2's pits.
-        
-        # self.player1_pits = ('A', 'B', 'C', 'D', 'E', 'F')
-        # # Optionally, add two dictionaries: one to store the opposite pit for each pit, 
-        # # and another to store the next pit in sequence.
-        
-        # self.player2_pits = ('G', 'H', 'I', 'J', 'K', 'L')
         
         self.player_pits = {
             1: ('A', 'B', 'C', 'D', 'E', 'F'),  # Pits player 1
@@ -34,27 +26,29 @@ class MancalaBoard:
             'G': 'A', 'H': 'B', 'I': 'C', 'J': 'D', 'K': 'E', 'L': 'F'
         }
         self.next_pit = {
-            'A': 'B', 'B': 'C', 'C': 'D', 'D': 'E', 'E': 'F', 
-            'L':'K', 'K':'J', 'J':'I', 'I':'H', 'H':'G'
+            'A': 'B', 'B': 'C', 'C': 'D', 'D': 'E', 'E': 'F', 'F':1, 1:'L', 
+            'L':'K', 'K':'J', 'J':'I', 'I':'H', 'H':'G', 'G':2, 2:'A'
         }
         
     def possibleMoves(self, player):
         """ returns the possible moves (i.e., the indices of the pits belonging to the player that contain seeds) """
         if player == 1:
-            return [pit for pit in self.player1_pits if self.board[pit] > 0]
+            return [pit for pit in self.player_pits[1] if self.board[pit] > 0]
         elif player == 2:
-            return [pit for pit in self.player2_pits if self.board[pit] > 0]
+            return [pit for pit in self.player_pits[2] if self.board[pit] > 0]
         else:
             return []
 
     def doMove(self, player, pit):
         # 1. The first {player} selects a {pit} on their side of the board and collects all the seeds from it;
+        print(pit)
         seeds = self.board[pit]
         self.board[pit] = 0
         current_pit = pit
         
         # 2. Moving counterclockwise, the player drops one seed into each pit until they have no more seeds in hand
         while seeds > 0:
+            # print(current_pit)
             current_pit = self.next_pit[current_pit]
             # 2. The  player  can  place  a  seed  in  any  pit  on  the  board  (including  their  own  store),  except  in  the opponent's store
             if (player == 1 and current_pit == 2) or (player == 2 and current_pit == 1):
@@ -72,4 +66,4 @@ class MancalaBoard:
                 self.board[current_pit] = 0
                 self.board[opposite_pit] = 0
 
-        return current_pit
+        # return current_pit

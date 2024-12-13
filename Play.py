@@ -1,4 +1,4 @@
-import copy
+from copy import deepcopy
 from math import inf
 
 MAX = 1
@@ -12,7 +12,7 @@ class Play:
         valid_move = False
         while not valid_move:
             try:
-                move = int(input("Enter your move (1-6): ")) - 1
+                move = int(input("Choose (1-6): ")) - 1
                 if move in self.game.state.possibleMoves():
                     self.game.state.doMove(1, move)
                     valid_move = True
@@ -21,37 +21,50 @@ class Play:
 
     def computerTurn(self):
         move = Play.MinimaxAlphaBetaPruning(self.game)
-        self.game.make_move(move)
+        self.game.doMove(2, move)
         print(f"Computer chose move {move + 1}")
         
-    def MinimaxAlphaBetaPruning(game, player, depth, alpha, beta):  
-        if game.gameOver() or depth == 1: 
-            bestValue = game.evaluate() 
-            return bestValue, None 
+    def MinimaxAlphaBetaPruning(self, player, depth, alpha, beta):  
+        print("holaaa")
+        if self.game.gameOver() or depth == 1: 
+            bestValue = self.game.evaluate() 
+            return bestValue, None
+        
+        print(self.game.state.possibleMoves(self.game.playerSide[player]))       
         if player == MAX: 
             bestValue = -inf 
-            for pit in game.state.possibleMoves(game.playerSide[player]): 
-                child_game = copy(game) 
-                child_game.state.doMove(game.playerSide[player], pit) 
+            for pit in self.game.state.possibleMoves(self.game.playerSide[player]): 
+                child_game = self.game
+                child_game.state.doMove(self.game.playerSide[player], pit) 
                 value, _ = Play.MinimaxAlphaBetaPruning(child_game, -player, depth-1, alpha, beta)
                 if value > bestValue: 
                         bestValue = value 
-                        bestPit = pit       
-                if bestValue >= beta: 
+                        bestPit = pit  
+                        print("a")
+
+                if bestValue >= beta:
+                    print("a") 
                     break      
                 if bestValue > alpha: 
+                        print("a")
                         alpha = bestValue 
         else: 
-            bestValue = +inf 
-            for pit in game.state.possibleMoves(game.playerSide[player]): 
-                child_game = copy(game) 
-                child_game.state.doMove(game.playerSide[player], pit) 
+            bestValue = +inf
+            for pit in self.game.state.possibleMoves(self.game.playerSide[player]): 
+                child_game = deepcopy(self.game)
+
+                child_game.state.doMove(self.game.playerSide[player], pit) 
                 value, _ = Play.MinimaxAlphaBetaPruning(child_game, -player, depth-1, alpha, beta)   
-                if value < bestValue: 
-                        bestValue = value 
-                        bestPit = pit       
+                if value < bestValue:
+                    print("a")
+                    bestValue = value 
+                    bestPit = pit       
                 if bestValue <= alpha: 
+                    print("a")
+
                     break
-                if bestValue < beta: 
-                        beta = bestValue 
-                return bestValue, bestPit
+                if bestValue < beta:
+                    print("a")
+ 
+                    beta = bestValue 
+        return bestValue, bestPit

@@ -7,7 +7,7 @@ class GameClass:
             the computer (player1 or player2).
         """
         self.state = state
-        self.playerSide = playerSide
+        self.playerSide = {1: 1, 2:2}
 
     def gameOver(self):
         """The function gameOver(), which checks if the game has ended (i.e., all the pits of one player are 
@@ -26,8 +26,8 @@ class GameClass:
                 for pit in self.state.player_pits[1]:
                     self.state.board[1] += self.state.board[pit]
                     self.state.board[pit] = 0
-            return True 
-        return False
+            return False 
+        return True
 
     def findWinner(self):
         player1_score = self.state.board[1]
@@ -38,23 +38,15 @@ class GameClass:
             return 'COMPUTER', player2_score
         else:
             return 'draw', player1_score
-
-    def getChildren(self):
-        children = []
-        for pit in self.state.player_pits[self.playerSide]:
-            if self.state.board[pit] > 0:
-                new_state = self.state.copy()
-                new_state.state.doMove(self.playerSide, pit)
-                next_player = 1 if self.playerSide == 2 else 2
-                children.append(GameClass(new_state, next_player))
-        return children
+   
     def h(self):
-        computer_store = self.state.board[self.playerSide['COMPUTER']]
-        human_store = self.state.board[self.playerSide['HUMAN']]
+        computer_store = self.state.board[self.playerSide[2]]
+        human_store = self.state.board[self.playerSide[1]]
         return computer_store - human_store
     
-
-    def evaluate(node):
-        # to do
-
-
+    def evaluate(self):
+        return GameClass.h(self)
+    
+            
+        
+        

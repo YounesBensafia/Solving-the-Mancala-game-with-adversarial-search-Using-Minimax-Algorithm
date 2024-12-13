@@ -1,126 +1,290 @@
 import pygame
 import sys
-import time
 
 # Initialize Pygame
 pygame.init()
 
-# Screen dimensions
-WIDTH, HEIGHT = 1000, 500
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Mancala Game")
+# Screen Dimensions
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 500
+BACKGROUND_COLOR = (230, 220, 210)  # Light beige
+BOARD_COLOR = (255, 120, 19)  # Dark brown
+
+# Mancala Board Dimensions
+BOARD_WIDTH = 800
+BOARD_HEIGHT = 250
+BOARD_X = (SCREEN_WIDTH - BOARD_WIDTH) // 2
+BOARD_Y = (SCREEN_HEIGHT - BOARD_HEIGHT) // 2
+
+# Pit Dimensions
+PIT_RADIUS = 40
+PIT_SPACING = 30
+STORE_WIDTH = 80
+STORE_HEIGHT = 200
 
 # Colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-BROWN = (102, 51, 0)
-LIGHT_BROWN = (153, 102, 51)
-STONE_COLOR = (200, 100, 50)
-HIGHLIGHT = (255, 255, 0)
+PIT_COLOR = (205, 133, 63)  # Peru brown
+STORE_COLOR = (160, 82, 45)  # Sienna
+STONE_COLOR = (169, 169, 169)  # Dark gray
+BUTTON_COLOR = (0, 128, 0)  # Green
+BUTTON_TEXT_COLOR = (255, 255, 255)  # White
 
-# Fonts
-pygame.font.init()
-FONT = pygame.font.Font(pygame.font.get_default_font(), 24)
+class MancalaAnimation:
+    def __init__(self):
+        # Set up the display
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption('Mancala Game')
+        
+        # Load background image
+        self.background_image = pygame.image.load('mancala.jpg')
+        self.background_image = pygame.transform.scale(self.background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        
+        # Game state
+        self.board = [4] * 12  # 6 pits for each player, initially 4 stones
+        self.player_stores = [0, 0]  # Stores for each player
+        self.current_player = 0  # 0 for first player, 1 for second player
+        self.pit_radius = PIT_RADIUS
+        self.game_started = False
 
-# Board Layout
-PIT_RADIUS = 50
-STONE_RADIUS = 12
-PIT_POSITIONS = [
-    # Top row (Player 2 side)
-    (150 + i * 120, 150) for i in range(6)
-] + [
-    # Bottom row (Player 1 side)
-    (150 + i * 120, 350) for i in range(6)
-]
-STORE_POSITIONS = [(50, 250), (950, 250)]  # Left and right stores
+    def draw_button(self):
+        font = pygame.font.Font(None, 48)
+        button_text = font.render('Start', True, BUTTON_TEXT_COLOR)
+        button_rect = pygame.Rect((SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 25, 200, 50))
+        pygame.draw.rect(self.screen, BUTTON_COLOR, button_rect, border_radius=15)
+        text_rect = button_text.get_rect(center=button_rect.center)
+        self.screen.blit(button_text, text_rect)
+        return button_rect
 
-# Stone count in each pit (default setup)
-stones = [4] * 6 + [0] + [4] * 6 + [0]
+    def draw_board(self):
+        # Draw background image
+        self.screen.blit(self.background_image, (0, 0))
+        
+        # Draw main board with rounded corners
+        pygame.draw.rect(
+            self.screen, 
+            BOARD_COLOR, 
+            (BOARD_X, BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT), 
+            border_radius=self.pit_radius
+        )
+        pygame.draw.rect(
+            self.screen, 
+            (0, 0, 0),  # Black border
+            (BOARD_X, BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT), 
+            3,  # Border thickness
+            border_radius=self.pit_radius
+        )
 
+        # Draw Player 1's store (left)
+        pygame.draw.rect(
+            self.screen, 
+            STORE_COLOR, 
+            (BOARD_X - STORE_WIDTH - 20, BOARD_Y + (BOARD_HEIGHT - STORE_HEIGHT) // 2, 
+             STORE_WIDTH, STORE_HEIGHT),
+            border_radius=self.pit_radius
+        )
+        pygame.draw.rect(
+            self.screen, 
+            (0, 0, 0),  # Black border
+            (BOARD_X - STORE_WIDTH - 20, BOARD_Y + (BOARD_HEIGHT - STORE_HEIGHT) // 2, 
+             STORE_WIDTH, STORE_HEIGHT),
+            3,  # Border thickness
+            border_radius=self.pit_radius
+        )
 
-def draw_board():
-    """Draw the Mancala board and pits."""
-    # Background
-    screen.fill((34, 139, 34))  # Grass green background
-    pygame.draw.rect(screen, LIGHT_BROWN, (100, 100, 800, 300), border_radius=20)  # Board
-    
-    # Draw pits
-    for i, pos in enumerate(PIT_POSITIONS):
-        color = HIGHLIGHT if stones[i] > 0 else BROWN
-        pygame.draw.circle(screen, color, pos, PIT_RADIUS)
-        pygame.draw.circle(screen, BLACK, pos, PIT_RADIUS, 3)  # Outline
+        # Draw Player 2's store (right)
+        pygame.draw.rect(
+            self.screen, 
+            STORE_COLOR, 
+            (BOARD_X + BOARD_WIDTH + 20, BOARD_Y + (BOARD_HEIGHT - STORE_HEIGHT) // 2, 
+             STORE_WIDTH, STORE_HEIGHT),
+            border_radius=self.pit_radius
+        )
+        pygame.draw.rect(
+            self.screen, 
+            (0, 0, 0),  # Black border
+            (BOARD_X + BOARD_WIDTH + 20, BOARD_Y + (BOARD_HEIGHT - STORE_HEIGHT) // 2, 
+             STORE_WIDTH, STORE_HEIGHT),
+            3,  # Border thickness
+            border_radius=self.pit_radius
+        )
 
-    # Draw stores
-    for i, pos in enumerate(STORE_POSITIONS):
-        pygame.draw.rect(screen, BROWN, (pos[0] - 40, pos[1] - 100, 80, 200), border_radius=20)
-        pygame.draw.rect(screen, BLACK, (pos[0] - 40, pos[1] - 100, 80, 200), 3, border_radius=20)  # Outline
+        # Draw pits
+        for i in range(6):
+            # Player 1's pits (bottom row)
+            pygame.draw.circle(
+                self.screen, 
+                PIT_COLOR, 
+                (BOARD_X + self.pit_radius + i * (self.pit_radius * 2 + PIT_SPACING), 
+                 BOARD_Y + BOARD_HEIGHT - self.pit_radius - 20),
+                self.pit_radius
+            )
+            pygame.draw.circle(
+                self.screen, 
+                (0, 0, 0),  # Black border
+                (BOARD_X + self.pit_radius + i * (self.pit_radius * 2 + PIT_SPACING), 
+                 BOARD_Y + BOARD_HEIGHT - self.pit_radius - 20),
+                self.pit_radius,
+                3  # Border thickness
+            )
+            # Player 2's pits (top row)
+            pygame.draw.circle(
+                self.screen, 
+                PIT_COLOR, 
+                (BOARD_X + self.pit_radius + i * (self.pit_radius * 2 + PIT_SPACING), 
+                 BOARD_Y + self.pit_radius + 20),
+                self.pit_radius
+            )
+            pygame.draw.circle(
+                self.screen, 
+                (0, 0, 0),  # Black border
+                (BOARD_X + self.pit_radius + i * (self.pit_radius * 2 + PIT_SPACING), 
+                 BOARD_Y + self.pit_radius + 20),
+                self.pit_radius,
+                3  # Border thickness
+            )
 
-    # Add labels
-    player1_label = FONT.render("Player 1", True, BLACK)
-    player2_label = FONT.render("Player 2", True, BLACK)
-    screen.blit(player1_label, (WIDTH // 2 - 50, 400))
-    screen.blit(player2_label, (WIDTH // 2 - 50, 50))
+        # Display stone counts in pits
+        font = pygame.font.Font(None, 36)
+        for i in range(6):
+            # Player 1's pit stones
+            text = font.render(str(self.board[i]), True, (0, 0, 0))
+            self.screen.blit(
+                text, 
+                (BOARD_X + self.pit_radius + i * (self.pit_radius * 2 + PIT_SPACING) - 10, 
+                 BOARD_Y + BOARD_HEIGHT - self.pit_radius - 40)
+            )
+            # Player 2's pit stones
+            text = font.render(str(self.board[i+6]), True, (0, 0, 0))
+            self.screen.blit(
+                text, 
+                (BOARD_X + self.pit_radius + i * (self.pit_radius * 2 + PIT_SPACING) - 10, 
+                 BOARD_Y + self.pit_radius + 10)
+            )
 
+        # Display store counts
+        font = pygame.font.Font(None, 48)
+        p1_store_text = font.render(str(self.player_stores[0]), True, (255, 255, 255))
+        p2_store_text = font.render(str(self.player_stores[1]), True, (255, 255, 255))
+        self.screen.blit(
+            p1_store_text, 
+            (BOARD_X - STORE_WIDTH // 2 - 20, BOARD_Y + BOARD_HEIGHT // 2 - 24)
+        )
+        self.screen.blit(
+            p2_store_text, 
+            (BOARD_X + BOARD_WIDTH + STORE_WIDTH // 2 + 20, BOARD_Y + BOARD_HEIGHT // 2 - 24)
+        )
 
-def draw_stones():
-    """Draw stones inside pits and stores."""
-    for i, count in enumerate(stones):
-        x, y = (PIT_POSITIONS + STORE_POSITIONS)[i]  # Center of the pit or store
-        for j in range(count):
-            # Arrange stones in a grid inside the pit or store
-            dx = (j % 4 - 1.5) * (STONE_RADIUS * 2.5)  # Spread stones horizontally
-            dy = (j // 4 - 0.5) * (STONE_RADIUS * 2.5)  # Spread stones vertically
-            pygame.draw.circle(screen, STONE_COLOR, (x + int(dx), y + int(dy)), STONE_RADIUS)
+    def set_pit_radius(self, radius):
+        self.pit_radius = radius
 
+    def run(self):
+        clock = pygame.time.Clock()
+        
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN and not self.game_started:
+                    mouse_pos = event.pos
+                    button_rect = self.draw_button()
+                    if button_rect.collidepoint(mouse_pos):
+                        self.game_started = True
 
-def animate_stone_movement(start, end):
-    """Animate a single stone moving between pits."""
-    start_x, start_y = (PIT_POSITIONS + STORE_POSITIONS)[start]
-    end_x, end_y = (PIT_POSITIONS + STORE_POSITIONS)[end]
-    x, y = start_x, start_y
+            if self.game_started:
+                self.draw_board()
+            else:
+                self.screen.blit(self.background_image, (0, 0))
+                self.draw_button()
 
-    for _ in range(30):  # Smooth transition
-        x += (end_x - start_x) / 30
-        y += (end_y - start_y) / 30
-        screen.fill((34, 139, 34))
-        draw_board()
-        draw_stones()
-        pygame.draw.circle(screen, HIGHLIGHT, (int(x), int(y)), STONE_RADIUS)
-        pygame.display.flip()
-        time.sleep(0.02)
+            pygame.display.flip()
+            clock.tick(30)  # 30 FPS
+            def draw_board(self):
+                # Draw background image
+                self.screen.blit(self.background_image, (0, 0))
+                
+                # Draw main board with rounded corners
+                pygame.draw.rect(
+                    self.screen, 
+                    BOARD_COLOR, 
+                    (BOARD_X, BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT), 
+                    border_radius=self.pit_radius
+                )
 
+                # Draw Player 1's store (left)
+                pygame.draw.rect(
+                    self.screen, 
+                    STORE_COLOR, 
+                    (BOARD_X - STORE_WIDTH - 20, BOARD_Y + (BOARD_HEIGHT - STORE_HEIGHT) // 2, 
+                     STORE_WIDTH, STORE_HEIGHT),
+                    border_radius=self.pit_radius
+                )
 
-def handle_click(pos):
-    """Handle clicks on pits."""
-    for i, pit_pos in enumerate(PIT_POSITIONS):
-        dist = ((pit_pos[0] - pos[0]) ** 2 + (pit_pos[1] - pos[1]) ** 2) ** 0.5
-        if dist <= PIT_RADIUS:
-            return i
-    return None
+                # Draw Player 2's store (right)
+                pygame.draw.rect(
+                    self.screen, 
+                    STORE_COLOR, 
+                    (BOARD_X + BOARD_WIDTH + 20, BOARD_Y + (BOARD_HEIGHT - STORE_HEIGHT) // 2, 
+                     STORE_WIDTH, STORE_HEIGHT),
+                    border_radius=self.pit_radius
+                )
 
+                # Draw pits with a more modern design
+                for i in range(6):
+                    # Player 1's pits (bottom row)
+                    pygame.draw.circle(
+                        self.screen, 
+                        PIT_COLOR, 
+                        (BOARD_X + self.pit_radius + i * (self.pit_radius * 2 + PIT_SPACING), 
+                         BOARD_Y + BOARD_HEIGHT - self.pit_radius - 20),
+                        self.pit_radius
+                    )
+                    # Player 2's pits (top row)
+                    pygame.draw.circle(
+                        self.screen, 
+                        PIT_COLOR, 
+                        (BOARD_X + self.pit_radius + i * (self.pit_radius * 2 + PIT_SPACING), 
+                         BOARD_Y + self.pit_radius + 20),
+                        self.pit_radius
+                    )
 
-# Main game loop
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            clicked_pit = handle_click(event.pos)
-            if clicked_pit is not None and stones[clicked_pit] > 0:
-                # Move stones from clicked pit (for now, simply animate to next pit)
-                stone_count = stones[clicked_pit]
-                stones[clicked_pit] = 0
-                for _ in range(stone_count):
-                    next_pit = (clicked_pit + 1) % len(stones)
-                    animate_stone_movement(clicked_pit, next_pit)
-                    stones[next_pit] += 1
-                    clicked_pit = next_pit
+                # Display stone counts in pits with a more modern font
+                font = pygame.font.Font(None, 36)
+                for i in range(6):
+                    # Player 1's pit stones
+                    text = font.render(str(self.board[i]), True, (0, 0, 0))
+                    self.screen.blit(
+                        text, 
+                        (BOARD_X + self.pit_radius + i * (self.pit_radius * 2 + PIT_SPACING) - 10, 
+                         BOARD_Y + BOARD_HEIGHT - self.pit_radius - 40)
+                    )
+                    # Player 2's pit stones
+                    text = font.render(str(self.board[i+6]), True, (0, 0, 0))
+                    self.screen.blit(
+                        text, 
+                        (BOARD_X + self.pit_radius + i * (self.pit_radius * 2 + PIT_SPACING) - 10, 
+                         BOARD_Y + self.pit_radius + 10)
+                    )
 
-    # Redraw the board
-    draw_board()
-    draw_stones()
-    pygame.display.flip()
+                # Display store counts with a more modern font
+                font = pygame.font.Font(None, 48)
+                p1_store_text = font.render(str(self.player_stores[0]), True, (255, 255, 255))
+                p2_store_text = font.render(str(self.player_stores[1]), True, (255, 255, 255))
+                
+                self.screen.blit(
+                    p1_store_text, 
+                    (BOARD_X - STORE_WIDTH // 2 - 20, BOARD_Y + BOARD_HEIGHT // 2 - 24)
+                )
+                self.screen.blit(
+                    p2_store_text, 
+                    (BOARD_X + BOARD_WIDTH + STORE_WIDTH // 2 + 20, BOARD_Y + BOARD_HEIGHT // 2 - 24)
+                )
 
-pygame.quit()
-sys.exit()
+def main():
+    game = MancalaAnimation()
+    game.set_pit_radius(50)  # Example of setting a new radius
+    game.run()
+
+if __name__ == "__main__":
+    main()
+
