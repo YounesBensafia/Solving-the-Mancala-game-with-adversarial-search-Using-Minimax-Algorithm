@@ -10,8 +10,13 @@ class MancalaBoard:
     
     def __init__(self):
         self.board = {
-            'A': 4, 'B': 4, 'C': 4, 'D': 4, 'E': 4, 'F': 4, 1: 0, #PLAYER 1
-            'G': 4, 'H': 4, 'I': 4, 'J': 4, 'K': 4, 'L': 4, 2: 0  #PLAYER 2
+            'A': 4, 'B': 4, 'C': 4, 'D': 4, 'E': 4, 'F': 4, #PLAYER1
+            
+            1: 0, #STORE 1
+            
+            'G': 4, 'H': 4, 'I': 4, 'J': 4, 'K': 4, 'L': 4, # PLAYER2
+            
+            2: 0  #STORE 2
         }
         
         
@@ -41,7 +46,6 @@ class MancalaBoard:
 
     def doMove(self, player, pit):
         # 1. The first {player} selects a {pit} on their side of the board and collects all the seeds from it;
-        print(pit)
         seeds = self.board[pit]
         self.board[pit] = 0
         current_pit = pit
@@ -65,5 +69,3 @@ class MancalaBoard:
                 self.board[player] += self.board[opposite_pit] + 1
                 self.board[current_pit] = 0
                 self.board[opposite_pit] = 0
-
-        # return current_pit

@@ -6,8 +6,8 @@ class GameClass:
             playerSide (dictionary):  stores the player side chosen by the human and
             the computer (player1 or player2).
         """
-        self.state = state
-        self.playerSide = {1: 1, 2:2}
+        self.state = state #INSTANCE OF MANCALA BOARD CLASS
+        self.playerSide = {1:1, 2:2} # HABIT TLAEB MEN A-F OU G-L
 
     def gameOver(self):
         """The function gameOver(), which checks if the game has ended (i.e., all the pits of one player are 
@@ -26,12 +26,13 @@ class GameClass:
                 for pit in self.state.player_pits[1]:
                     self.state.board[1] += self.state.board[pit]
                     self.state.board[pit] = 0
-            return False 
-        return True
+            return True 
+        return False
 
     def findWinner(self):
         player1_score = self.state.board[1]
         player2_score = self.state.board[2]
+        
         if player1_score > player2_score:
             return 'HUMAN', player1_score
         elif player2_score > player1_score:
