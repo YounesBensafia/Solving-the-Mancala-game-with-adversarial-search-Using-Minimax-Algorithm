@@ -23,7 +23,7 @@ while not game.gameOver():
         playerside = 2
     else:
         print("a")
-        _, bestpit = play.MinimaxAlphaBetaPruning(playerside, 50, alpha, beta)
+        _, bestpit = play.MinimaxAlphaBetaPruning(play.game,playerside, 100, alpha, beta)
         # print(bestpit)
         # game.state.doMove(playerside, bestpit)
         playerside = 1

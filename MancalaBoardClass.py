@@ -46,8 +46,9 @@ class MancalaBoard:
 
     def doMove(self, player, pit):
         # 1. The first {player} selects a {pit} on their side of the board and collects all the seeds from it;
-        seeds = self.board[pit]
-        self.board[pit] = 0
+        
+        seeds = self.board[pit] # HENA RAHO IL SELECTS
+        self.board[pit] = 0 # COLLECTS THE SEEDS FROM IT
         current_pit = pit
         
         # 2. Moving counterclockwise, the player drops one seed into each pit until they have no more seeds in hand
@@ -65,7 +66,7 @@ class MancalaBoard:
             # 3. If the last seed placed lands in an empty pit on the player's side, that seed and all the seeds in the 
             # opposite pit (belonging to the opponent) go to the player and are placed in their store; 
             opposite_pit = self.opposite_pits[current_pit]
-            if current_pit in self.player_pits[player]:
-                self.board[player] += self.board[opposite_pit] + 1
-                self.board[current_pit] = 0
-                self.board[opposite_pit] = 0
+            # if current_pit in self.player_pits[player]:
+            self.board[player] = self.board[player] + self.board[opposite_pit] + 1
+            self.board[current_pit] = 0
+            self.board[opposite_pit] = 0
