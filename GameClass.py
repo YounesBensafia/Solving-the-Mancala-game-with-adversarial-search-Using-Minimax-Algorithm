@@ -48,6 +48,3 @@ class GameClass:
     def evaluate(self):
         return GameClass.h(self)
     
-            
-        
-        
