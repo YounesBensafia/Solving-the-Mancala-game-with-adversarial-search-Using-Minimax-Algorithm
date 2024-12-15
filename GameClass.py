@@ -7,7 +7,10 @@ class GameClass:
             the computer (player1 or player2).
         """
         self.state = state #INSTANCE OF MANCALA BOARD CLASS
-        self.playerSide = {1:1, 2:2} # HABIT TLAEB MEN A-F OU G-L
+        if playerSide == 1:
+            self.playerSide = {1:1, 2:2} # HABIT TLAEB MEN A-F OU G-L4
+        else:
+            self.playerSide = {2:1, 1:2} 
 
     def gameOver(self):
         """The function gameOver(), which checks if the game has ended (i.e., all the pits of one player are 

@@ -1,5 +1,6 @@
 
 # ----- DONE
+# from an import a
 class MancalaBoard:
     
     # The game is represented as a board, which can be modeled using a dictionary. 
@@ -30,6 +31,7 @@ class MancalaBoard:
             'A': 'G', 'B': 'H', 'C': 'I', 'D': 'J', 'E': 'K', 'F': 'L',
             'G': 'A', 'H': 'B', 'I': 'C', 'J': 'D', 'K': 'E', 'L': 'F'
         }
+        
         self.next_pit = {
             'A': 'B', 'B': 'C', 'C': 'D', 'D': 'E', 'E': 'F', 'F':1, 1:'L', 
             'L':'K', 'K':'J', 'J':'I', 'I':'H', 'H':'G', 'G':2, 2:'A'
@@ -70,3 +72,4 @@ class MancalaBoard:
             self.board[player] = self.board[player] + self.board[opposite_pit] + 1
             self.board[current_pit] = 0
             self.board[opposite_pit] = 0
+        # a(self.board)
