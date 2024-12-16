@@ -1,16 +1,14 @@
 from copy import deepcopy
 from math import inf
 # from an import a
-MAX = 2
-MIN = 1
 
+MAX = 1
+MIN = -1
 
 class Play:
     def __init__(self, game):
         self.game = game
-        
     
-
     def humanTurn(self):
         valid_move = False
         while not valid_move:
@@ -27,19 +25,20 @@ class Play:
         self.game.doMove(2, move)
         print(f"Computer chose move {move + 1}")
         
-    def MinimaxAlphaBetaPruning(self, game, player, depth, alpha, beta):
+    def MinimaxAlphaBetaPruning(self, game, player, depth, alpha, beta, h):
         if game.gameOver() or depth == 1:
-            bestValue = game.evaluate()
+            bestValue = game.evaluate(h)
             return bestValue, None
-
+        
         if player == MAX:
             bestValue = -float('inf')
             for pit in game.state.possibleMoves(game.playerSide[player]):
+                # print(game.state.possibleMoves(game.playerSide[player]))
                 child_game = deepcopy(game)
     
                 child_game.state.doMove(game.playerSide[player], pit)
                 
-                value, _ = self.MinimaxAlphaBetaPruning(child_game, MIN, depth - 1, alpha, beta)
+                value, _ = self.MinimaxAlphaBetaPruning(child_game, -player, depth - 1, alpha, beta, h)
                 if value > bestValue:
                     bestValue = value
                     bestPit = pit
@@ -51,9 +50,9 @@ class Play:
             bestValue = float('inf')
             for pit in game.state.possibleMoves(game.playerSide[player]):
                 child_game = deepcopy(game)
+                # print(game.state.possibleMoves(game.playerSide[player]))
                 child_game.state.doMove(game.playerSide[player], pit)
-                
-                value, _ = self.MinimaxAlphaBetaPruning(child_game, MAX, depth - 1, alpha, beta)
+                value, _ = self.MinimaxAlphaBetaPruning(child_game, -player, depth - 1, alpha, beta, h)
                 if value < bestValue:
                     bestValue = value
                     bestPit = pit

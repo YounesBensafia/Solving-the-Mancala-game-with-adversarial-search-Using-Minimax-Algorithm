@@ -1,5 +1,5 @@
 class GameClass:
-    def __init__(self, state, playerSide):
+    def __init__(self, state, choice):
         """
         Args:
             state (an instance of the MancalaBoard class): represent the game state.
@@ -7,10 +7,11 @@ class GameClass:
             the computer (player1 or player2).
         """
         self.state = state #INSTANCE OF MANCALA BOARD CLASS
-        if playerSide == 1:
-            self.playerSide = {1:1, 2:2} # HABIT TLAEB MEN A-F OU G-L4
+        self.player = choice
+        if choice == 1:
+            self.playerSide = {1:2, -1:1} # HABIT TLAEB MEN A-F OU G-L4
         else:
-            self.playerSide = {2:1, 1:2} 
+            self.playerSide = {1:1, -1:2} 
 
     def gameOver(self):
         """The function gameOver(), which checks if the game has ended (i.e., all the pits of one player are 
@@ -43,11 +44,29 @@ class GameClass:
         else:
             return 'draw', player1_score
    
-    def h(self):
-        computer_store = self.state.board[self.playerSide[2]]
-        human_store = self.state.board[self.playerSide[1]]
+    def h1(self):
+        computer_store = self.state.board[self.playerSide[1]]
+        human_store = self.state.board[self.playerSide[-1]]
         return computer_store - human_store
     
-    def evaluate(self):
-        return GameClass.h(self)
+    def h2(self):
+        # Graines dans les magasins (scores actuels)
+        computer_store = self.state.board[self.playerSide[1]]
+        computer2_store = self.state.board[self.playerSide[-1]]
+
+        # Graines restantes dans les cases adverses
+        computer1 = sum(self.state.board[pit] for pit in self.state.player_pits[self.playerSide[1]])
+
+        # Favoriser le score tout en limitant les opportunités adverses
+        return 10 * (-computer_store + computer2_store) - computer1
+
+
+
+
+    
+    def evaluate(self, h):
+        if h == 1:
+            return GameClass.h1(self)
+        else:
+            return GameClass.h2(self)
     

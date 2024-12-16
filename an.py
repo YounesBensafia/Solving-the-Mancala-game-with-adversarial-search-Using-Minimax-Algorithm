@@ -1,4 +1,4 @@
-import pygame
+import pygame # type: ignore
 import time
 
 def animate_mancala_board(board_dict):
@@ -73,7 +73,7 @@ def animate_mancala_board(board_dict):
         # time.sleep(2)
         # break
     
-    pygame.quit()
+    # pygame.quit()
 
 # Example usage:
 def a(example_board):    
