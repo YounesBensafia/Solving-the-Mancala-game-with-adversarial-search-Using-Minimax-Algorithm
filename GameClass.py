@@ -38,9 +38,9 @@ class GameClass:
         player2_score = self.state.board[2]
         
         if player1_score > player2_score:
-            return 'HUMAN', player1_score
+            return 'PLAYER1', player1_score
         elif player2_score > player1_score:
-            return 'COMPUTER', player2_score
+            return 'PLAYER2', player2_score
         else:
             return 'draw', player1_score
    
@@ -50,15 +50,34 @@ class GameClass:
         return computer_store - human_store
     
     def h2(self):
-        # Graines dans les magasins (scores actuels)
         computer_store = self.state.board[self.playerSide[1]]
-        computer2_store = self.state.board[self.playerSide[-1]]
+        computer_store2 = self.state.board[self.playerSide[-1]]  
 
-        # Graines restantes dans les cases adverses
-        computer1 = sum(self.state.board[pit] for pit in self.state.player_pits[self.playerSide[1]])
+        computer2_remaining = sum(self.state.board[pit] for pit in self.state.player_pits[self.playerSide[1]])  
+        computer1_remaining = sum(self.state.board[pit] for pit in self.state.player_pits[self.playerSide[-1]])
 
-        # Favoriser le score tout en limitant les opportunités adverses
-        return 10 * (-computer_store + computer2_store) - computer1
+        computer1_empty_pits = sum(1 for pit in self.state.player_pits[self.playerSide[-1]] if self.state.board[pit] == 0)
+        computer2_empty_pits = sum(1 for pit in self.state.player_pits[self.playerSide[1]] if self.state.board[pit] == 0)
+
+        # Contrôler le joueur adverse en limitant ses options
+        computer2_next_move = sum(1 for pit in self.state.player_pits[self.playerSide[1]] if self.state.board[pit] != 0) 
+
+        return (
+            30 * computer_store           # Maximise les graines dans le magasin de Computer 2
+            - 25 * computer_store2            # Pénalise le score de l'humain (on favorise Computer 1)
+            - 10 * computer2_remaining    # Pénalise les graines restantes de Computer 2
+            + 5 * computer1_remaining     # Encourage à garder des graines pour de futures opportunités
+            - 15 * computer2_empty_pits   # Pénalise Computer 2 pour ses pits vides
+            + 10 * computer1_empty_pits   # Réduit l'impact des pits vides de Computer 1
+            - 5 * computer2_next_move     # Réduit les options pour Computer 2
+            + 5 * (computer_store - computer_store2)  # Favorise un écart positif pour Computer 1
+        )
+
+        
+    
+
+
+
 
 
 

@@ -59,3 +59,4 @@ class MancalaBoard:
             self.board[player] = self.board[player] + self.board[opposite_pit] + 1
             self.board[current_pit] = 0
             self.board[opposite_pit] = 0
+            
