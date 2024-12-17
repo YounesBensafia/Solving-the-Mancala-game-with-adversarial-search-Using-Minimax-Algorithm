@@ -1,6 +1,5 @@
 from copy import deepcopy
 from math import inf
-# from an import a
 
 MAX = 1
 MIN = -1
