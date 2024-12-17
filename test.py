@@ -31,17 +31,17 @@ screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Mancala Board")
 
 # Load background image
-background_image = pygame.image.load('mancala.jpg')
+background_image = pygame.image.load('./images/mancala.jpg')
 background_image = pygame.transform.scale(background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
-background_image1 = pygame.image.load('img.jpg')
+background_image1 = pygame.image.load('./images/img.jpg')
 background_image1 = pygame.transform.scale(background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 def draw_board(board):
-    background_image = pygame.image.load('mancala.jpg')
+    background_image = pygame.image.load('./images/mancala.jpg')
     background_image = pygame.transform.scale(background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
     screen.blit(background_image, (0, 0))
-    background_image = pygame.image.load('mancala.jpg')
+    background_image = pygame.image.load('./images/mancala.jpg')
     background_image = pygame.transform.scale(background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
     
     # Draw stores (Mancala pits)
@@ -80,7 +80,7 @@ def draw_board(board):
         screen.blit(text, (140 + i * 100, 240))
     
     pygame.display.flip()
-    time.sleep(4)
+    time.sleep(1)
 def get_user_char(board):
     # Define buttons
     button_radius = 30
@@ -152,7 +152,7 @@ def choose_mode( question, option1, option2, p1="1",p2="2"):
     while running:
         
         # Fill the screen with background color
-        background_image1 = pygame.image.load('img.jpg')
+        background_image1 = pygame.image.load('./images/img.jpg')
         background_image1 = pygame.transform.scale(background_image1, (WINDOW_WIDTH, WINDOW_HEIGHT))
         screen.blit(background_image1, (0, 0))
         # Draw the question
@@ -230,15 +230,29 @@ while not game.gameOver():
             # print("let us choose")
             move = get_user_char(possible)
             game.state.doMove(game.playerSide[turn], move)
+            draw_board(game.state.board)
         else:
             _, bestpit = play.MinimaxAlphaBetaPruning(game, turn, 5, alpha, beta, 2)
             print("COMPUTER I CHOOSE :" + bestpit)
+            font = pygame.font.Font(None, 36)
+            message = f"COMPUTER I CHOOSE: {bestpit}"
+            text_surface = font.render(message, True, (255,0,0))
+            screen.blit(text_surface, (WINDOW_WIDTH // 2 - text_surface.get_width() // 2, WINDOW_HEIGHT - text_surface.get_height() - 10))
+            pygame.display.flip()
+            time.sleep(1)
             game.state.doMove(game.playerSide[turn], bestpit)
             draw_board(game.state.board)
         turn = -turn
     else:
         _, bestpit = play.MinimaxAlphaBetaPruning(game, turn, 5, alpha, beta, 1)
+        # draw_board(game.state.board)
         print("COMPUTER# CHOOSE :" + bestpit)
+        font = pygame.font.Font(None, 36)
+        message = f"COMPUTER# CHOOSE: {bestpit}"
+        text_surface = font.render(message, True, (255, 0, 0))
+        screen.blit(text_surface, (WINDOW_WIDTH // 2 - text_surface.get_width() // 2, WINDOW_HEIGHT - text_surface.get_height() - 10))
+        pygame.display.flip()
+        time.sleep(1)
         game.state.doMove(game.playerSide[turn], bestpit)
         draw_board(game.state.board)
         turn = -turn
