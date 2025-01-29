@@ -46,6 +46,5 @@ Here are sample images of the Mancala board setup and gameplay:
 To run the Mancala game locally:
 
 1. Clone this repository:
-   ```bash
-   git clone https://github.com/username/mancala.git
-   cd mancala
+   git clone https://github.com/YounesBensafia/Solving-the-Mancala-game-with-adversarial-search-Using-Minimax-Algorithm.git
+   cd Solving-the-Mancala-game-with-adversarial-search-Using-Minimax-Algorithm
