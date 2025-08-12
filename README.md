@@ -12,7 +12,7 @@ Here’s your text rewritten in a more professional, polished style while keepin
 
 Mancala is typically played on a wooden or plastic board featuring:
 
-* **Small Pits** – Usually 6 on each side of the board.
+* **Pits** – Usually 6 on each side of the board.
 * **Stores** – Large pits located at each end of the board, used for collecting captured seeds.
 * **Seeds** – Each small pit begins with 4 seeds.
 
@@ -40,27 +40,27 @@ Below are example images showing the Mancala board, setup, and gameplay:
     </td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/eff70947-537f-4ee1-9388-68c1030e0315" alt="Initial Setup" width="300"/><br/>
-      <sub><b>Initial Setup</b></sub>
+      <sub><b>Human vs Human or Human vs AI</b></sub>
     </td>
   </tr>
   <tr>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/92ccd45a-fa60-4b55-84e0-0d9703daebf5" alt="Gameplay" width="300"/><br/>
-      <sub><b>Gameplay Example</b></sub>
+      <sub><b>Board</b></sub>
     </td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/f96b9957-08af-467f-8035-a9cfdf189d60" alt="Pieces" width="300"/><br/>
-      <sub><b>Game Pieces</b></sub>
+      <sub><b>Choosing Your Side</b></sub>
     </td>
   </tr>
   <tr>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/252a5533-afbf-49a2-b263-8c72464fb9c1" alt="Close-up" width="300"/><br/>
-      <sub><b>Close-up View</b></sub>
+      <sub><b>Who start first?</b></sub>
     </td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/30f3ef29-f99e-4888-a3b9-2f8c8b372673" alt="End Game" width="300"/><br/>
-      <sub><b>End Game State</b></sub>
+      <sub><b>Which Pit to Choose</b></sub>
     </td>
   </tr>
 </table>
@@ -70,7 +70,6 @@ Below are example images showing the Mancala board, setup, and gameplay:
 ## Features
 
 * Interactive and intuitive gameplay.
-* Realistic seed-sowing mechanics.
 * Clear and user-friendly board representation.
 
 ---
@@ -83,7 +82,3 @@ To run the Mancala game locally:
 git clone https://github.com/YounesBensafia/Solving-the-Mancala-game-with-adversarial-search-Using-Minimax-Algorithm.git
 cd Solving-the-Mancala-game-with-adversarial-search-Using-Minimax-Algorithm
 ```
-
----
-
-If you want, I can also **add a “How It Works” section** explaining the **Minimax algorithm** used in your project so it feels more like a professional README for a research-oriented game. That would make it both polished and technically complete.
