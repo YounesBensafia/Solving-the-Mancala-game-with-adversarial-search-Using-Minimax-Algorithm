@@ -1,6 +1,6 @@
 # Mancala
 
-<img width="600" height="200" alt="knights (1)" src="https://github.com/user-attachments/assets/d2bc66b4-90d0-4862-894c-fbcf16771c68" />
+<img width="100%" height="200" alt="knights (1)" src="https://github.com/user-attachments/assets/d2bc66b4-90d0-4862-894c-fbcf16771c68" />
 
 **Mancala** is a traditional strategy board game, also known as *Awalé*, with origins in Africa. The game revolves around the strategic sowing of seeds to capture as many as possible.
 
