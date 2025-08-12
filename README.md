@@ -1,8 +1,6 @@
-Here’s your text rewritten in a more professional, polished style while keeping it clear and structured:
-
----
-
 # Mancala
+
+<img width="600" height="200" alt="knights (1)" src="https://github.com/user-attachments/assets/d2bc66b4-90d0-4862-894c-fbcf16771c68" />
 
 **Mancala** is a traditional strategy board game, also known as *Awalé*, with origins in Africa. The game revolves around the strategic sowing of seeds to capture as many as possible.
 
@@ -79,6 +77,6 @@ Below are example images showing the Mancala board, setup, and gameplay:
 To run the Mancala game locally:
 
 ```bash
-git clone https://github.com/YounesBensafia/Solving-the-Mancala-game-with-adversarial-search-Using-Minimax-Algorithm.git
-cd Solving-the-Mancala-game-with-adversarial-search-Using-Minimax-Algorithm
+git clone https://github.com/YounesBensafia/MiniMaxala.git
+cd MiniMaxala
 ```
