@@ -1,43 +1,77 @@
+Here’s your text rewritten in a more professional, polished style while keeping it clear and structured:
+
+---
+
 # Mancala
 
-**Mancala** is a traditional sowing game, also known as *Awalé*, originating in Africa. The game involves strategic placement of seeds on a board to collect as many as possible.
+**Mancala** is a traditional strategy board game, also known as *Awalé*, with origins in Africa. The game revolves around the strategic sowing of seeds to capture as many as possible.
 
 ---
 
-## Game Description
+## Game Overview
 
-Mancala is played on a board with:  
-- **Small Pits**: Typically 6 on each side.  
-- **Stores**: One large pit at each end (used for collecting seeds).  
-- **Seeds**: Each small pit starts with 4 seeds.
+Mancala is typically played on a wooden or plastic board featuring:
 
-### How to Play
-1. Players take turns selecting a pit from their side of the board.
-2. All seeds from the chosen pit are picked up and sown one-by-one counterclockwise into subsequent pits.  
-3. If the last seed lands in your *store*, you get an extra turn.  
-4. The game ends when all pits on one player's side are empty.  
-5. The player with the most seeds in their store wins.  
+* **Small Pits** – Usually 6 on each side of the board.
+* **Stores** – Large pits located at each end of the board, used for collecting captured seeds.
+* **Seeds** – Each small pit begins with 4 seeds.
 
 ---
 
-## Board Representation
+## Rules of Play
 
-Here are sample images of the Mancala board setup and gameplay:
+1. Players take turns choosing one pit from their side of the board.
+2. All seeds from the chosen pit are picked up and distributed one by one in a counterclockwise direction into subsequent pits, including the player’s store but skipping the opponent’s store.
+3. If the last seed lands in the player’s store, they take an extra turn.
+4. The game ends when all pits on one player’s side are empty.
+5. The player with the highest number of seeds in their store at the end of the game wins.
 
-<img src="https://github.com/user-attachments/assets/b107778c-869c-4091-af77-97dada1730b7" alt="Mancala Board" width="400"/>  
-<img src="https://github.com/user-attachments/assets/eff70947-537f-4ee1-9388-68c1030e0315" alt="Setup" width="400"/>  
-<img src="https://github.com/user-attachments/assets/92ccd45a-fa60-4b55-84e0-0d9703daebf5" alt="Gameplay" width="400"/>  
-<img src="https://github.com/user-attachments/assets/f96b9957-08af-467f-8035-a9cfdf189d60" alt="Pieces" width="400"/>  
-<img src="https://github.com/user-attachments/assets/252a5533-afbf-49a2-b263-8c72464fb9c1" alt="Close-up" width="400"/>  
-<img src="https://github.com/user-attachments/assets/30f3ef29-f99e-4888-a3b9-2f8c8b372673" alt="End Game" width="400"/>  
+---
+
+## Board Layout
+
+Below are example images showing the Mancala board, setup, and gameplay:
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/b107778c-869c-4091-af77-97dada1730b7" alt="Mancala Board" width="300"/><br/>
+      <sub><b>Full Board</b></sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/eff70947-537f-4ee1-9388-68c1030e0315" alt="Initial Setup" width="300"/><br/>
+      <sub><b>Initial Setup</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/92ccd45a-fa60-4b55-84e0-0d9703daebf5" alt="Gameplay" width="300"/><br/>
+      <sub><b>Gameplay Example</b></sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/f96b9957-08af-467f-8035-a9cfdf189d60" alt="Pieces" width="300"/><br/>
+      <sub><b>Game Pieces</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/252a5533-afbf-49a2-b263-8c72464fb9c1" alt="Close-up" width="300"/><br/>
+      <sub><b>Close-up View</b></sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/30f3ef29-f99e-4888-a3b9-2f8c8b372673" alt="End Game" width="300"/><br/>
+      <sub><b>End Game State</b></sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
 ## Features
 
-- **Interactive Gameplay**  
-- **Strategic Seed Sowing Mechanism**  
-- **User-Friendly Board Representation**  
+* Interactive and intuitive gameplay.
+* Realistic seed-sowing mechanics.
+* Clear and user-friendly board representation.
 
 ---
 
@@ -45,6 +79,11 @@ Here are sample images of the Mancala board setup and gameplay:
 
 To run the Mancala game locally:
 
-1. Clone this repository:
-   git clone https://github.com/YounesBensafia/Solving-the-Mancala-game-with-adversarial-search-Using-Minimax-Algorithm.git
-   cd Solving-the-Mancala-game-with-adversarial-search-Using-Minimax-Algorithm
+```bash
+git clone https://github.com/YounesBensafia/Solving-the-Mancala-game-with-adversarial-search-Using-Minimax-Algorithm.git
+cd Solving-the-Mancala-game-with-adversarial-search-Using-Minimax-Algorithm
+```
+
+---
+
+If you want, I can also **add a “How It Works” section** explaining the **Minimax algorithm** used in your project so it feels more like a professional README for a research-oriented game. That would make it both polished and technically complete.

@@ -1,0 +1,26 @@
+window:
+  width: 800
+  height: 400
+  title: "Mancala Game"
+  fps: 60
+
+colors:
+  brown: [139, 69, 19]
+  beige: [245, 222, 179]
+  black: [0, 0, 0]
+  white: [255, 255, 255]
+  gold: [255, 215, 0]
+  green: [34, 139, 34]
+  red: [220, 20, 60]
+  blue: [70, 130, 180]
+
+board:
+  pit_radius: 40
+  store_width: 60
+  store_height: 200
+  margin: 50
+  
+animations:
+  stone_speed: 200
+  fade_duration: 0.5
+  bounce_height: 20

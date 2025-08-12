@@ -35,7 +35,7 @@ class MancalaAnimation:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption('Mancala Game')
 
-        self.background_image = pygame.image.load('mancala.jpg')
+        self.background_image = pygame.image.load('images/mancala.jpg')
         self.background_image = pygame.transform.scale(self.background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
         self.pit_radius = PIT_RADIUS
